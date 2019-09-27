@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHS111.Online.Tools.Web.Models;
 
 namespace NHS111.Online.Tools.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
@@ -15,22 +13,19 @@ namespace NHS111.Online.Tools.Web.Controllers
             return View();
         }
 
-        public IActionResult About()
+        [AllowAnonymous]
+        public ActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewBag.Message = "Your application description page.";
 
             return View();
         }
 
-        public IActionResult Contact()
+        [AllowAnonymous]
+        public ActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewBag.Message = "Your contact page.";
 
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 

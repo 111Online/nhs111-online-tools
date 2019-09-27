@@ -1,0 +1,33 @@
+﻿@using NHS111.Online.Tools.Web.Helpers
+@if (User.Identity.IsAuthenticated)
+{
+    using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>@Html.ActionLink("Hello " + User.Identity.Name + "!", "ViewUser", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</li>
+            @if (User.IsAdminUser())
+            {
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink("Register user", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                        <li>@Html.ActionLink("View users", "ListUsers", "Manage", routeValues: null, htmlAttributes: new { id = "usersLink" })</li>
+                        <li role="separator" class="divider"></li>
+                        @*<li>@Html.ActionLink("Create role", "Create", "Role", routeValues: null, htmlAttributes: new { id = "createRoleLink" })</li>
+                            <li>@Html.ActionLink("View roles", "Index", "Role", routeValues: null, htmlAttributes: new { id = "rolesLink" })</li>*@
+
+                    </ul>
+                </li>
+            }
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

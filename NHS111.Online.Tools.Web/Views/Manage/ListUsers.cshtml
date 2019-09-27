@@ -1,0 +1,37 @@
+﻿@using NHS111.Online.Tools.Models.SharedViewModels
+@model IEnumerable<UserViewModel>
+
+@section Title {User list}
+
+<div class="local-header">
+    <h1 class="local-header__title heading--large">
+        User list
+    </h1>
+</div>
+
+<div class="measure">
+    <ul class="user-list">
+
+        @{
+            var sortedUsers = Model.OrderBy((user) =>
+            {
+                if (user.Status == "Submitted") return 1;
+                else if (user.Status == "Approved") return 2;
+                else return 3;
+
+            }).ToList();
+        }
+        @foreach (var user in sortedUsers)
+        {
+            <li class="list-group-item clearfix">
+                <span class="swatch" data-status="@user.Status"></span>
+                <span>@user.Email</span>
+                <div class="user-list__manage">
+                    @Html.ActionLink("edit", "EditUser", "Manage", new {user.Email}, null) |
+                    @Html.ActionLink("delete", "DeleteUser", "Manage", new {user.Email}, null)
+                </div>
+            </li>
+        }
+    </ul>
+    <p>@Html.ActionLink("Register new user", "Register", "Account", null, new { @role = "button", @class = "btn btn-default" })</p>
+</div>

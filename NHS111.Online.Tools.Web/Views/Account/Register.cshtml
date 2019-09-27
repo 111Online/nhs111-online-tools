@@ -1,0 +1,49 @@
+﻿@using NHS111.Online.Tools.Models.AccountViewModels
+@model RegisterViewModel
+@section Title {Register}
+
+<div class="local-header">
+    <h1 class="local-header__title heading--large">
+        Register
+    </h1>
+</div>
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    <section class="measure">
+        <div class="section-item last">
+            @Html.ValidationSummary(true, string.Empty)
+            <fieldset id="user-name">
+                <legend>
+                    <h2>Create a new account</h2>
+                </legend>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-15-chars" })
+                    @Html.ValidationMessageFor(m => m.Email)
+                </div>
+                <div class="callout callout--info">
+                    <ul>
+                        <li>Passwords must be at least 6 characters</li>
+                        <li>Passwords must have at least one non alphanumeric character</li>
+                        <li>Passwords must have at least one lowercase ('a'-'z')</li>
+                        <li>Passwords must have at least one uppercase ('A'-'Z')</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-15-chars form-textbox" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmPassword)
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control form-control-15-chars form-textbox" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                </div>
+                <div class="form-group">
+                    <p>I agree with the data portal <a href="/help/privacy" target="_blank">privacy and use policy</a></p>
+                </div>
+            </fieldset>
+            <button type="submit" class="button--next" id="logIn">Register</button>
+        </div>
+    </section>
+}

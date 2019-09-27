@@ -1,0 +1,28 @@
+﻿@using NHS111.Online.Tools.Models.ManageViewModels
+@model EditUserViewModel
+@section Title {Edit user}
+<div class="local-header">
+    <h1 class="local-header__title heading--large">
+        Edit user
+    </h1>
+</div>
+@using (Html.BeginForm("EditUser", "Manage", FormMethod.Post))
+{
+    <section class="measure">
+        @Html.Partial("_StatusMessage", Model.Status)
+        <div class="section-item last">
+            @Html.ValidationSummary(true, string.Empty)
+            <fieldset id="user-name">
+                <legend>
+                    <h2>Account settings</h2>
+                </legend>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.HiddenFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-15-chars", @disabled = "disabled" })
+                </div>
+            </fieldset>
+            <button type="submit" class="button--next" id="editUser">Save</button>
+        </div>
+    </section>
+}

@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using NHS111.Online.Tools.Models
+@model NHS111.Online.Tools.Models.AccountViewModels.LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@section Title {Log in}
+
+<div class="local-header">
+    <h1 class="local-header__title heading--large">
+        Log in
+    </h1>
+</div>
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    <section class="measure">
+        <div class="section-item last">
+            @if (ViewData.ModelState.Count > 0)
+            {
+                <ul class="field-validation-error">
+                @foreach (var stateEntry in ViewData.ModelState)
+                {
+                    foreach (var modelError in stateEntry.Value.Errors)
+                    {
+                        <li>@Html.Raw(modelError.ErrorMessage)</li>
+                    }
+                }
+                </ul>
+            }
+                <fieldset id="user-name">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-15-chars" })
+                        @Html.ValidationMessageFor(m => m.Email)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-15-chars form-textbox" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div class="multiple-choice">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { value = "false" })
+                        @Html.LabelFor(m => m.RememberMe)
+                    </div>
+                    <p>I agree with the data portal <a href="/help/privacy" target="_blank">privacy and use policy</a></p>
+                </fieldset>
+            <button type="submit" class="button--next" id="logIn">Log in</button>
+        </div>
+    </section>
+}

@@ -1,0 +1,9 @@
+﻿@model string
+
+@if (!string.IsNullOrEmpty(Model))
+{
+    var statusMessageClass = Model.StartsWith("Error") ? "callout--alert" : "callout--info";
+    <div class="callout @statusMessageClass">
+        <p>@Model</p>
+    </div>
+}
