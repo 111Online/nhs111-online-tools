@@ -1,6 +1,4 @@
-using System;
-
-namespace NHS111.Online.Tools.Web.Models
+namespace NHS111.Online.Tools.Models
 {
     public class ErrorViewModel
     {

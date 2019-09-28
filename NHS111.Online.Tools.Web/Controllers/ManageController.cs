@@ -77,19 +77,6 @@ namespace NHS111.Online.Tools.Web.Controllers
                 throw new ApplicationException($"Unable to load user with Email '{model.Email}'.");
             }
 
-            //var ccgs = user.CcgList;
-            //var diffs = selectedCcgs.Except(ccgs).Any() || ccgs.Except(selectedCcgs).Any();
-            //if (diffs)
-            //{
-            //    user.CcgListAsString = string.Join("|", selectedCcgs);
-            //    var setCcgsResult = await _userManager.UpdateAsync(user);
-            //    if (!setCcgsResult.Succeeded)
-            //    {
-            //        AddErrors(setCcgsResult);
-            //        return View(model);
-            //    }
-            //}
-
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(ListUsers));
         }

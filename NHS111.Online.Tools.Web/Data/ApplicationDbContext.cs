@@ -18,6 +18,7 @@ namespace NHS111.Online.Tools.Web.Data
             {
                 config.Property(p => p.Status).HasColumnType("int");
             });
+            builder.Entity<ApplicationRole>();
         }
     }
 }

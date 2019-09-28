@@ -15,9 +15,8 @@
                         <li>@Html.ActionLink("Register user", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
                         <li>@Html.ActionLink("View users", "ListUsers", "Manage", routeValues: null, htmlAttributes: new { id = "usersLink" })</li>
                         <li role="separator" class="divider"></li>
-                        @*<li>@Html.ActionLink("Create role", "Create", "Role", routeValues: null, htmlAttributes: new { id = "createRoleLink" })</li>
-                            <li>@Html.ActionLink("View roles", "Index", "Role", routeValues: null, htmlAttributes: new { id = "rolesLink" })</li>*@
-
+                        <li>@Html.ActionLink("Create role", "Create", "Role", routeValues: null, htmlAttributes: new { id = "createRoleLink" })</li>
+                        <li>@Html.ActionLink("View roles", "List", "Role", routeValues: null, htmlAttributes: new { id = "rolesLink" })</li>
                     </ul>
                 </li>
             }
