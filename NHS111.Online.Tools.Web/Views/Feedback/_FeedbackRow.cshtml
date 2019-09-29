@@ -1,0 +1,29 @@
+﻿@model NHS111.Online.Tools.Models.FeedbackViewModels.ListFeedbackViewModel
+
+<tr>
+    <th>
+        @Model.DateAdded
+    </th>
+    <td>
+        @Model.Text
+    </td>
+    <td>
+        @Model.PageId
+    </td>
+    <td>
+        @Model.UserId
+    </td>
+    <td>
+        <p data-placement="top" data-toggle="tooltip" title="Delete">
+            // not implemented as never used but code left for reference should it be needed
+            @*@using (Ajax.BeginForm("Delete", new AjaxOptions { InsertionMode = InsertionMode.Replace, UpdateTargetId = "feedback-list", LoadingElementId = "loader", HttpMethod = "POST" }))
+            {
+                @Html.HiddenFor(m => m.PartitionKey)
+                @Html.HiddenFor(m => m.RowKey)*@
+            <button class="btn btn-danger btn-xs disabled" data-title="Delete">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            @*}*@
+        </p>
+    </td>
+</tr>

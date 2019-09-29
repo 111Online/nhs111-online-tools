@@ -11,7 +11,6 @@ namespace NHS111.Online.Tools.Web.Helpers
     {
         public static bool IsAdminUser(this IPrincipal user)
         {
-            //return user.Identity.IsAuthenticated && user.IsInRole(Constants.WebToolsAdministratorsRole);
             return user.Identity.IsAuthenticated && user.IsInRole(Constants.WebToolsAdministratorsRole);
         }
 

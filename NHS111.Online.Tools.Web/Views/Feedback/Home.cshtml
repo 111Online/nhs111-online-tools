@@ -1,7 +1,29 @@
-﻿@{
+﻿@using NHS111.Online.Tools.Models.FeedbackViewModels
+@model IList<NHS111.Online.Tools.Models.FeedbackViewModels.ListFeedbackViewModel>
+@{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Home</h2>
+<h1>NHS 111 Online Feedback</h1>
+
+<div class="table-responsive">
+    <table class="table table-hover" id="feedback-list">
+        <thead>
+        <tr>
+            <th>Date Added</th>
+            <th>Feedback</th>
+            <th>Page</th>
+            <th>User</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            @Html.Partial("_FeedbackRow", Model[i])
+        }
+        </tbody>
+    </table>
+</div>
 
