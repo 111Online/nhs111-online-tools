@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NHS111.Online.Tools.Models;
 using NHS111.Online.Tools.Models.AccountViewModels;
@@ -17,12 +19,14 @@ namespace NHS111.Online.Tools.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -61,11 +65,6 @@ namespace NHS111.Online.Tools.Web.Controllers
                 _logger.LogInformation("User logged in.");
                 return RedirectToLocal(returnUrl);
             }
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User account locked out.");
-                return RedirectToAction(nameof(Lockout));
-            }
 
             if(user.Status != RegistrationStatus.Approved)
                 ModelState.AddModelError(string.Empty, "Your account has not been approved.");
@@ -78,17 +77,15 @@ namespace NHS111.Online.Tools.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Lockout()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register(string returnUrl = null)
+        public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            var model = new RegisterViewModel
+            {
+                Roles = _roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name))
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -104,12 +101,14 @@ namespace NHS111.Online.Tools.Web.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                    await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                    _logger.LogInformation("Roles added to new user");
+                    return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
 
+            model.Roles = _roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name));
             return View(model);
         }
 

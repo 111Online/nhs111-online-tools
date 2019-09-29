@@ -26,6 +26,8 @@ namespace NHS111.Online.Tools.Web.Controllers
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
 
+        public string StatusMessage { get; set; }
+
         public ManageController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, ILogger<ManageController> logger)
         {
             _userManager = userManager;
@@ -33,8 +35,6 @@ namespace NHS111.Online.Tools.Web.Controllers
             _roleManager = roleManager;
             _logger = logger;
         }
-
-        public string StatusMessage { get; set; }
 
         public ActionResult ViewUser()
         {
@@ -90,12 +90,23 @@ namespace NHS111.Online.Tools.Web.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
             {
-                throw new ApplicationException($"Unable to load user with Email '{model.Email}'.");
+                var unselectedRoles = _roleManager
+                    .Roles
+                    .Where(r => model.SelectedRoles.All(sr => sr != r.Name))
+                    .Select(r => r.Name);
+
+                await RemoveFromRoles(user, unselectedRoles);
+                await AddToRoles(user, model.SelectedRoles);
+
+                _logger.LogInformation($"Profile for user {user.Email} has been updated");
+                return RedirectToAction("ListUsers", "Manage");
             }
 
-            StatusMessage = "Your profile has been updated";
+            _logger.LogInformation($"Profile for user {user.Email} failed");
+            model.Roles = _roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name));
             return RedirectToAction(nameof(ListUsers));
         }
 
@@ -161,7 +172,7 @@ namespace NHS111.Online.Tools.Web.Controllers
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 
-            return RedirectToAction(nameof(ChangePassword));
+            return RedirectToAction(nameof(ViewUser));
         }
 
         [HttpGet]
@@ -218,6 +229,24 @@ namespace NHS111.Online.Tools.Web.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private async Task AddToRoles(ApplicationUser user, IEnumerable<string> roles)
+        {
+            foreach (var role in roles)
+            {
+                if (!await _userManager.IsInRoleAsync(user, role))
+                    await _userManager.AddToRoleAsync(user, role);
+            }
+        }
+
+        private async Task RemoveFromRoles(ApplicationUser user, IEnumerable<string> roles)
+        {
+            foreach (var role in roles)
+            {
+                if (await _userManager.IsInRoleAsync(user, role))
+                    await _userManager.RemoveFromRoleAsync(user, role);
             }
         }
 
