@@ -1,28 +1,30 @@
 ﻿@using NHS111.Online.Tools.Models.ManageViewModels
 @model EditUserViewModel
 @section Title {Edit user}
-<div class="local-header">
-    <h1 class="local-header__title heading--large">
-        Edit user
-    </h1>
-</div>
-@using (Html.BeginForm("EditUser", "Manage", FormMethod.Post))
+
+<h2>Edit user</h2>
+
+@using (Html.BeginForm("EditUser", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    <section class="measure">
-        @Html.Partial("_StatusMessage", Model.Status)
-        <div class="section-item last">
-            @Html.ValidationSummary(true, string.Empty)
-            <fieldset id="user-name">
-                <legend>
-                    <h2>Account settings</h2>
-                </legend>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.HiddenFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-15-chars", @disabled = "disabled" })
-                </div>
-            </fieldset>
-            <button type="submit" class="button--next" id="editUser">Save</button>
+    @Html.AntiForgeryToken()
+    <h4>Edit account.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         </div>
-    </section>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.SelectedRoles, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.ListBoxFor(x => x.SelectedRoles, Model.Roles, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
 }

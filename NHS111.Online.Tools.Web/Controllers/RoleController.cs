@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NHS111.Online.Tools.Models;
+using NHS111.Online.Tools.Models.Identity;
 using NHS111.Online.Tools.Models.RoleViewModels;
 
 namespace NHS111.Online.Tools.Web.Controllers

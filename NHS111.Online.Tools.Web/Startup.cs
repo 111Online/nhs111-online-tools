@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHS111.Online.Tools.Models;
+using NHS111.Online.Tools.Models.Identity;
 using NHS111.Online.Tools.Web.Data;
 
 namespace NHS111.Online.Tools.Web

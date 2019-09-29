@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHS111.Online.Tools.Models;
+using NHS111.Online.Tools.Models.Identity;
 using NHS111.Online.Tools.Models.ManageViewModels;
 using NHS111.Online.Tools.Models.Security;
+using NHS111.Online.Tools.Models.SharedViewModels;
 
 namespace NHS111.Online.Tools.Web.Controllers
 {
@@ -17,12 +23,14 @@ namespace NHS111.Online.Tools.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
 
-        public ManageController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ManageController> logger)
+        public ManageController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, ILogger<ManageController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -36,11 +44,17 @@ namespace NHS111.Online.Tools.Web.Controllers
         [HttpGet]
         public ActionResult ListUsers()
         {
-            var users = _userManager.Users.ToArray();
-            var model = users.Select(user => new EditUserViewModel()
+            var users = _userManager
+                .Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .ToList();
+
+            var model = users.Select(user => new UserViewModel()
                 {
                     Email = user.Email,
-                    Status = Enum.GetName(typeof(RegistrationStatus), user.Status)
+                    Status = Enum.GetName(typeof(RegistrationStatus), user.Status),
+                    SelectedRoles = user.UserRoles.Select(r => r.Role.Name)
                 })
                 .ToList();
 
@@ -52,6 +66,8 @@ namespace NHS111.Online.Tools.Web.Controllers
         public async Task<ActionResult> EditUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            var roles = await _userManager.GetRolesAsync(user);
+
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with email '{email}'.");
@@ -60,7 +76,9 @@ namespace NHS111.Online.Tools.Web.Controllers
             var model = new EditUserViewModel()
             {
                 Email = user.Email,
-                Status = Enum.GetName(typeof(RegistrationStatus), user.Status)
+                Status = Enum.GetName(typeof(RegistrationStatus), user.Status),
+                SelectedRoles = roles,
+                Roles = _roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name))
             };
             return View(model);
         }
