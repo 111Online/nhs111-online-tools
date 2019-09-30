@@ -66,9 +66,6 @@ namespace NHS111.Online.Tools.Web.Controllers
                 return RedirectToLocal(returnUrl);
             }
 
-            if(user.Status != RegistrationStatus.Approved)
-                ModelState.AddModelError(string.Empty, "Your account has not been approved.");
-
             if(ModelState.ErrorCount == 0)
                 ModelState.AddModelError(string.Empty, "Sorry we could not log you in. Please try entering your account details again. If you can't remember your password please <a href=\"/Account/ForgotPassword\">reset your password</a>");
 
@@ -96,7 +93,7 @@ namespace NHS111.Online.Tools.Web.Controllers
             
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Status = RegistrationStatus.Approved };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

@@ -53,7 +53,6 @@ namespace NHS111.Online.Tools.Web.Controllers
             var model = users.Select(user => new UserViewModel()
                 {
                     Email = user.Email,
-                    Status = Enum.GetName(typeof(RegistrationStatus), user.Status),
                     SelectedRoles = user.UserRoles.Select(r => r.Role.Name)
                 })
                 .ToList();
@@ -76,7 +75,6 @@ namespace NHS111.Online.Tools.Web.Controllers
             var model = new EditUserViewModel()
             {
                 Email = user.Email,
-                Status = Enum.GetName(typeof(RegistrationStatus), user.Status),
                 SelectedRoles = roles,
                 Roles = _roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name))
             };

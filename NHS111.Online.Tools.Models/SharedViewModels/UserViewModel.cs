@@ -16,8 +16,6 @@ namespace NHS111.Online.Tools.Models.SharedViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        public string Status { get; set; }
-
         [Required]
         [Display(Name = "User roles")]
         public IEnumerable<string> SelectedRoles { get; set; }

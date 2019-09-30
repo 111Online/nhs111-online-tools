@@ -18,11 +18,7 @@ namespace NHS111.Online.Tools.Web.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<ApplicationUser>(config =>
-            {
-                config.Property(p => p.Status).HasColumnType("int");
-            });
-
+            builder.Entity<ApplicationUser>();
             builder.Entity<ApplicationUserRole>(userRole =>
             {
                 userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
