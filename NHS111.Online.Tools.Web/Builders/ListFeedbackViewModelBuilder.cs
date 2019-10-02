@@ -19,7 +19,7 @@ namespace NHS111.Online.Tools.Web.Builders
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber = 0, int pageSize = 1000)
+        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize)
         {
             var storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("AzureConnection"));
             var tableClient = storageAccount.CreateCloudTableClient();
@@ -38,6 +38,6 @@ namespace NHS111.Online.Tools.Web.Builders
 
     public interface IListFeedbackViewModelBuilder
     {
-        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber = 0, int pageSize = 1000);
+        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize);
     }
 }
