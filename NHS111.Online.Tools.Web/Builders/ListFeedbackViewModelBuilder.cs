@@ -26,8 +26,8 @@ namespace NHS111.Online.Tools.Web.Builders
             var tableClient = storageAccount.CreateCloudTableClient();
             var table = tableClient.GetTableReference(_configuration["AzureSettings:TableName"]);
 
-            string dateStartFilter = startDate.Equals("") ? "" : "DateAdded ge datetime'" + startDate + "'";
-            string dateEndFilter = endDate.Equals("") ? "" : "DateAdded le datetime'" + endDate + "'";
+            string dateStartFilter = startDate == null || startDate.Equals("") ? "" : "DateAdded ge datetime'" + startDate + "'";
+            string dateEndFilter = endDate == null || endDate.Equals("") ? "" : "DateAdded le datetime'" + endDate + "'";
 
             var query = new TableQuery<ListFeedbackViewModel>();
             query.Where(buildFilters(dateStartFilter, dateEndFilter));

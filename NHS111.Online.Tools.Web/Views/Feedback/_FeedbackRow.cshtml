@@ -20,7 +20,7 @@
             @Model.data.SearchString
         </td>
         <td>
-            @Model.data.StartingPathwayTitle
+            @(Model.data.Page == "SearchResults" ? "" : Model.data.StartingPathwayTitle) @* There is an issue where PW title shows wrong for SearchResults page, so this hides it. *@
         </td>
         <td>
             @Model.UserId
