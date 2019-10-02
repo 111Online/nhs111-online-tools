@@ -26,6 +26,15 @@ namespace NHS111.Online.Tools.Web.Builders
             var table = tableClient.GetTableReference(_configuration["AzureSettings:TableName"]);
 
             var query = new TableQuery<ListFeedbackViewModel>();
+
+            if (pageNumber == 0)
+            {
+                // Azure Tables do not support pagination queries
+                // So on the first page it is quicker to just take the pageSize
+                // while other pages need the full set of results
+                query.Take(pageSize);
+            }
+
             var results = await table.ExecuteQueryAsync(query);
 
             if (!results.Any()) return new List<ListFeedbackViewModel>();
