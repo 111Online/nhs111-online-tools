@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure;
@@ -19,13 +20,17 @@ namespace NHS111.Online.Tools.Web.Builders
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize)
+        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate)
         {
             var storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("AzureConnection"));
             var tableClient = storageAccount.CreateCloudTableClient();
             var table = tableClient.GetTableReference(_configuration["AzureSettings:TableName"]);
 
+            string dateStartFilter = startDate.Equals("") ? "" : "DateAdded ge datetime'" + startDate + "'";
+            string dateEndFilter = endDate.Equals("") ? "" : "DateAdded le datetime'" + endDate + "'";
+
             var query = new TableQuery<ListFeedbackViewModel>();
+            query.Where(buildFilters(dateStartFilter, dateEndFilter));
 
             if (pageNumber == 0)
             {
@@ -43,10 +48,24 @@ namespace NHS111.Online.Tools.Web.Builders
             var feedback = (pageNumber > 0) ? orderedResults.Skip((pageNumber - 1) * pageSize).Take(pageSize) : orderedResults.Take(pageSize);
             return feedback;
         }
+
+        private string buildFilters (params string[] filters) {
+            // Query cannot take empty filters, so this takes any filters and builds it up. Currently AND only.
+            string filter = "";
+            for (int i = 0; i < filters.Length; i++)
+            {
+                if (filters[i] != "")
+                {
+                    if (i > 0) filter += " and ";
+                    filter += "(" + filters[i] + ")";
+                }
+            }
+            return filter;
+        }
     }
 
     public interface IListFeedbackViewModelBuilder
     {
-        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize);
+        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate);
     }
 }
