@@ -17,10 +17,11 @@ namespace NHS111.Online.Tools.Web.Controllers
             _listFeedbackViewModelBuilder = listFeedbackViewModelBuilder;
         }
 
-        public async Task<IActionResult> Home()
+        [HttpGet]
+        public async Task<IActionResult> Home([FromQuery]int page = 1, [FromQuery]int size = 500, [FromQuery]string startDate = "", [FromQuery]string endDate = "", [FromQuery]string query = "")
         {
             var model = await _listFeedbackViewModelBuilder
-                .Build();
+                .Build(page, size, startDate, endDate, query);
             return View(model.ToList());
         }
     }

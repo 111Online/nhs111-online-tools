@@ -4,20 +4,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="container">
+    <h2>@ViewBag.Title</h2>
 
-<div>
-    <ul class="list-group">
-        @foreach (var role in Model)
-        {
-            <li class="list-group-item clearfix">
-                @role.Name
-                <span class="pull-right">
-                    @Html.ActionLink("delete", "Delete", "Role", new { @role.Name, role.Id }, null)
-                </span>
-            </li>
-        }
-    </ul>
-    @Html.ActionLink("Create role", "Create", "Role", new { @role = "button", @class = "btn btn-default" })
+    <div>
+        <ul class="list-group">
+            @foreach (var role in Model)
+            {
+                <li class="list-group-item clearfix">
+                    @role.Name
+                    <span class="pull-right">
+                        @Html.ActionLink("delete", "Delete", "Role", new { @role.Name, role.Id }, null)
+                    </span>
+                </li>
+            }
+        </ul>
+        @Html.ActionLink("Create role", "Create", "Role", new { @role = "button", @class = "btn btn-default" })
+    </div>
 </div>
-

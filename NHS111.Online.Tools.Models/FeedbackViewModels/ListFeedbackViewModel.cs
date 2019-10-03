@@ -12,6 +12,22 @@ namespace NHS111.Online.Tools.Models.FeedbackViewModels
             PartitionKey = $"{now:yyyy-MM}";
             RowKey = $"{now:dd HH-mm-ss-fff}-{Guid.NewGuid()}";
         }
+        
+        [JsonProperty(PropertyName = "data")]
+        public dynamic Data
+        {
+            get
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject(PageId);
+                }
+                catch
+                {
+                    return null; // Old (2017) feedback has a URL string in PageId instead of object.
+                }
+            }
+        }
 
         [JsonProperty(PropertyName = "dateAdded")]
         public DateTime DateAdded { get; set; }
