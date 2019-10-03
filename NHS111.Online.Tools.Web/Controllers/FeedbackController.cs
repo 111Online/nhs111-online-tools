@@ -18,10 +18,10 @@ namespace NHS111.Online.Tools.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Home([FromQuery]int page = 1, [FromQuery]int size = 500, [FromQuery]string startDate = "", [FromQuery]string endDate = "")
+        public async Task<IActionResult> Home([FromQuery]int page = 1, [FromQuery]int size = 500, [FromQuery]string startDate = "", [FromQuery]string endDate = "", [FromQuery]string query = "")
         {
             var model = await _listFeedbackViewModelBuilder
-                .Build(page, size, startDate, endDate);
+                .Build(page, size, startDate, endDate, query);
             return View(model.ToList());
         }
     }

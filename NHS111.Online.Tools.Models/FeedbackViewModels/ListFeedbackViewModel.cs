@@ -14,7 +14,20 @@ namespace NHS111.Online.Tools.Models.FeedbackViewModels
         }
         
         [JsonProperty(PropertyName = "data")]
-        public dynamic data => JsonConvert.DeserializeObject(PageId);
+        public dynamic Data
+        {
+            get
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject(PageId);
+                }
+                catch
+                {
+                    return null; // Old (2017) feedback has a URL string in PageId instead of object.
+                }
+            }
+        }
 
         [JsonProperty(PropertyName = "dateAdded")]
         public DateTime DateAdded { get; set; }

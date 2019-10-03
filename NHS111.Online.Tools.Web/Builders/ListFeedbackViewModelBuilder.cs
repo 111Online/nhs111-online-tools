@@ -20,14 +20,14 @@ namespace NHS111.Online.Tools.Web.Builders
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate)
+        public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate, string searchQuery)
         {
             var storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("AzureConnection"));
             var tableClient = storageAccount.CreateCloudTableClient();
             var table = tableClient.GetTableReference(_configuration["AzureSettings:TableName"]);
 
-            string dateStartFilter = startDate == null || startDate.Equals("") ? "" : "DateAdded ge datetime'" + startDate + "'";
-            string dateEndFilter = endDate == null || endDate.Equals("") ? "" : "DateAdded le datetime'" + endDate + "'";
+            string dateStartFilter = string.IsNullOrEmpty(startDate) ? "" : "DateAdded ge datetime'" + startDate + "'";
+            string dateEndFilter = string.IsNullOrEmpty(endDate) ? "" : "DateAdded le datetime'" + endDate + "'";
 
             var query = new TableQuery<ListFeedbackViewModel>();
             query.Where(buildFilters(dateStartFilter, dateEndFilter));
@@ -35,8 +35,19 @@ namespace NHS111.Online.Tools.Web.Builders
             var results = await table.ExecuteQueryAsync(query);
 
             if (!results.Any()) return new List<ListFeedbackViewModel>();
+            
+            var filteredResults = results; // Fallback if no searchQuery to be all results
 
-            var orderedResults = results.OrderByDescending(f => f.DateAdded);
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                filteredResults = results.Where(m =>
+                {
+                    return (!string.IsNullOrEmpty(m.Text) && m.Text.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase)) || 
+                           (!string.IsNullOrEmpty(m.UserId) && m.UserId.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase));
+                });
+            }
+            var orderedResults = filteredResults.OrderByDescending(f => f.DateAdded);
+
             var feedback = (pageNumber > 0) ? orderedResults.Skip((pageNumber - 1) * pageSize).Take(pageSize) : orderedResults.Take(pageSize);
             return feedback;
         }
@@ -48,7 +59,7 @@ namespace NHS111.Online.Tools.Web.Builders
             {
                 if (filters[i] != "")
                 {
-                    if (i > 0) filter += " and ";
+                    if (filter != "") filter += " and ";
                     filter += "(" + filters[i] + ")";
                 }
             }
@@ -58,6 +69,6 @@ namespace NHS111.Online.Tools.Web.Builders
 
     public interface IListFeedbackViewModelBuilder
     {
-        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate);
+        Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate, string query);
     }
 }
