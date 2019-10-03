@@ -3,24 +3,26 @@
 
 @section Title {User list}
 
-<h2>Users</h2>
+<div class="container">
+    <h2>Users</h2>
 
-<div>
-    <ul class="list-group">
-        @foreach (var user in Model)
-        {
-            <li class="list-group-item clearfix">
-                @user.Email
-                @foreach (var userRole in user.SelectedRoles)
-                {
-                    <span class="label label-default">@userRole</span>
-                }
-                <span class="pull-right">
-                    @Html.ActionLink("edit", "EditUser", "Manage", new { user.Email }, null) |
-                    @Html.ActionLink("delete", "DeleteUser", "Manage", new { user.Email }, null)
-                </span>
-            </li>
-        }
-    </ul>
-    @Html.ActionLink("Register user", "Register", "Account", null, new { @role = "button", @class = "btn btn-default" })
+    <div>
+        <ul class="list-group">
+            @foreach (var user in Model)
+            {
+                <li class="list-group-item clearfix">
+                    @user.Email
+                    @foreach (var userRole in user.SelectedRoles)
+                    {
+                        <span class="label label-default">@userRole</span>
+                    }
+                    <span class="pull-right">
+                        @Html.ActionLink("edit", "EditUser", "Manage", new { user.Email }, null) |
+                        @Html.ActionLink("delete", "DeleteUser", "Manage", new { user.Email }, null)
+                    </span>
+                </li>
+            }
+        </ul>
+        @Html.ActionLink("Register user", "Register", "Account", null, new { @role = "button", @class = "btn btn-default" })
+    </div>
 </div>
