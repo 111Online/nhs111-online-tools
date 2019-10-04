@@ -2,33 +2,55 @@
 @model NHS111.Online.Tools.Models.FeedbackViewModels.ListFeedbackViewModel
 
 @* The reason for `@(Model.Data != null ? Model.Data.Gender : "")` is old 2017-style feedback breaks it otherwise. *@
-<tr>
-    <th>
-        @Model.DateAdded
-    </th>
-    <td>
-        @(Model.Data != null ? Model.Data.Gender : "")
-    </td>
-    <td>
-        @(Model.Data != null ? Model.Data.Age : "")
-    </td>
-    <td>
-        @Model.Text
-    </td>
-    <td>
-        @(Model.Data != null ? Model.Data.SearchString : "")
-    </td>
-    <td>
-        @(Model.Data == null || Model.Data.Page == "SearchResults" ? "" : Model.Data.StartingPathwayTitle) @* There is an issue where PW title shows wrong for SearchResults page, so this hides it. *@
-    </td>
-    <td>
-        @(Model.Data != null ? string.Join(" ", Regex.Split(Model.Data.Page.ToString(), "(?<!^)(?=[A-Z](?![A-Z]|$))")) : "") @* Splits CamelCase so the column can word wrap *@
-    </td>
-    <td>
-        <p data-placement="top" data-toggle="tooltip" title="More Info">
-            <button class="btn btn-xs btn-info" data-title="More Info" data-toggle="modal" data-target="#infoModal" data-json="@Model.PageId" data-userid="@Model.UserId">
-                <span class="glyphicon glyphicon-info-sign"></span>
-            </button>
-        </p>
-    </td>
-</tr>
+    <tr>
+        <th>
+            @Model.DateAdded
+        </th>
+        <td>
+            @(Model.Data != null ? Model.Data.Gender : "")
+        </td>
+        <td>
+            @(Model.Data != null ? Model.Data.Age : "")
+        </td>
+        <td>
+            @Model.Text
+        </td>
+        <td>
+            @(Model.Data != null ? Model.Data.SearchString : "")
+        </td>
+        <td>
+            @(Model.Data != null ? Model.Data.StartingPathwayTitle: "")
+        </td>
+        <td>
+            @{
+                var pageType = Model.Data.Page;
+                if (pageType != null)
+                {
+                    // Splits CamelCase so the column can word wrap
+                    pageType = string.Join(" ", Regex.Split(pageType.ToString(), "(?<!^)(?=[A-Z](?![A-Z]|$))"));
+                }  
+
+                if (Model.Data == null || Model.Data.Page == "SearchResults") // There is an issue where PW title shows wrong for SearchResults page, so this hides it.
+                {
+                    pageType = "";
+                }
+                else if (Model.Data.Page == "Question" || Model.Data.Page == "FirstQuestion")
+                {
+                    pageType += "<br>" + Model.Data.TxNumber;
+                }
+                if (Model.Data.DxCode != null)
+                {
+                    pageType += "<br>" + Model.Data.DxCode;
+                }
+            }
+
+            @Html.Raw(pageType)
+        </td>
+        <td>
+            <p data-placement="top" data-toggle="tooltip" title="More Info">
+                <button class="btn btn-xs btn-info" data-title="More Info" data-toggle="modal" data-target="#infoModal" data-json="@Model.PageId" data-userid="@Model.UserId">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </button>
+            </p>
+        </td>
+    </tr>
