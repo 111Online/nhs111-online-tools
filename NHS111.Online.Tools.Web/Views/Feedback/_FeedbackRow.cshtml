@@ -19,7 +19,7 @@
             @(Model.Data != null ? Model.Data.SearchString : "")
         </td>
         <td>
-            @(Model.Data != null ? Model.Data.StartingPathwayTitle: "")
+            @(Model.Data != null && Model.Data.Page != "SearchResults" ? Model.Data.StartingPathwayTitle: "") @* There is an issue where PW title shows wrong for SearchResults page, so this hides it. *@
         </td>
         <td>
             @{
@@ -29,8 +29,7 @@
                     // Splits CamelCase so the column can word wrap
                     pageType = string.Join(" ", Regex.Split(pageType.ToString(), "(?<!^)(?=[A-Z](?![A-Z]|$))"));
                 }  
-
-                if (Model.Data == null || Model.Data.Page == "SearchResults") // There is an issue where PW title shows wrong for SearchResults page, so this hides it.
+                if (pageType == null)
                 {
                     pageType = "";
                 }
@@ -38,7 +37,7 @@
                 {
                     pageType += "<br>" + Model.Data.TxNumber;
                 }
-                if (Model.Data.DxCode != null)
+                else if (Model.Data.DxCode != null)
                 {
                     pageType += "<br>" + Model.Data.DxCode;
                 }
