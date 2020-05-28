@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using NHS111.Online.Tools.Models.Identity;
 
 namespace NHS111.Online.Tools.Models.SharedViewModels
 {

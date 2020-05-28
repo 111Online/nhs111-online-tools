@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using NHS111.Online.Tools.Models;
 using NHS111.Online.Tools.Models.AccountViewModels;
 using NHS111.Online.Tools.Models.Identity;
-using NHS111.Online.Tools.Models.Security;
 
 namespace NHS111.Online.Tools.Web.Controllers
 {
