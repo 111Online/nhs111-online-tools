@@ -4,15 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NHS111.Online.Tools.Models;
 using NHS111.Online.Tools.Models.Identity;
 using NHS111.Online.Tools.Models.ManageViewModels;
-using NHS111.Online.Tools.Models.Security;
 using NHS111.Online.Tools.Models.SharedViewModels;
 
 namespace NHS111.Online.Tools.Web.Controllers

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
+﻿using System.Security.Principal;
 using NHS111.Online.Tools.Models.Security;
 
 namespace NHS111.Online.Tools.Web.Helpers
