@@ -21,17 +21,17 @@ namespace NHS111.Online.Tools.Web.Builders
 
         public async Task<IEnumerable<ListFeedbackViewModel>> Build(int pageNumber, int pageSize, string startDate, string endDate, string searchQuery)
         {
-            var storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("AzureConnection"));
-            var tableClient = storageAccount.CreateCloudTableClient();
-            var table = tableClient.GetTableReference(_configuration["AzureSettings:TableName"]);
 
-            string dateStartFilter = string.IsNullOrEmpty(startDate) ? "" : "DateAdded ge datetime'" + startDate + "'";
-            string dateEndFilter = string.IsNullOrEmpty(endDate) ? "" : "DateAdded le datetime'" + endDate + "'";
+            var results = await GetData(startDate, endDate, _configuration.GetConnectionString("AzureConnection"),
+                _configuration["AzureSettings:TableName"]);
 
-            var query = new TableQuery<ListFeedbackViewModel>();
-            query.Where(buildFilters(dateStartFilter, dateEndFilter));
-
-            var results = await table.ExecuteQueryAsync(query);
+            if(!String.IsNullOrWhiteSpace(_configuration.GetConnectionString("LegacyFeedbackConnection")) 
+               && !String.IsNullOrWhiteSpace(_configuration["AzureSettings:LegacyFeedbackTableName"]))
+            {
+                var legacyResults =  await GetData(startDate, endDate, _configuration.GetConnectionString("LegacyFeedbackConnection"),
+                _configuration["AzureSettings:LegacyFeedbackTableName"]);
+                results = results.Concat(legacyResults);
+            }
 
             if (!results.Any()) return new List<ListFeedbackViewModel>();
             
@@ -49,6 +49,21 @@ namespace NHS111.Online.Tools.Web.Builders
 
             var feedback = (pageNumber > 0) ? orderedResults.Skip((pageNumber - 1) * pageSize).Take(pageSize) : orderedResults.Take(pageSize);
             return feedback;
+        }
+
+        private async Task<IEnumerable<ListFeedbackViewModel>> GetData(string startDate, string endDate, string storageAccountConnection, string tableName)
+        {
+            var storageAccount = CloudStorageAccount.Parse(storageAccountConnection);
+            var tableClient = storageAccount.CreateCloudTableClient();
+            var table = tableClient.GetTableReference(tableName);
+
+            string dateStartFilter = string.IsNullOrEmpty(startDate) ? "" : "DateAdded ge datetime'" + startDate + "'";
+            string dateEndFilter = string.IsNullOrEmpty(endDate) ? "" : "DateAdded le datetime'" + endDate + "'";
+
+            var query = new TableQuery<ListFeedbackViewModel>();
+            query.Where(buildFilters(dateStartFilter, dateEndFilter));
+
+            return await table.ExecuteQueryAsync(query);
         }
 
         private string buildFilters (params string[] filters) {
